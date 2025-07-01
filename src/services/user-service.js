@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const UserRepository = require('../repository/user-repository');
 const {JWT_KEY} = require('../config/serverConfig');
+const { Children } = require('react');
 
 class UserService{
     constructor(){
@@ -31,6 +32,23 @@ class UserService{
             return newJWT;
         } catch (error) {
             console.log("Something went wrong in the signIn process");
+            throw error;
+        }
+    }
+    async isAuthenticated(token){
+        try {
+            const isVerified = this.verifyToken(token);
+            if(!isVerified){
+                throw {error : 'Invalid token'}
+            }
+            const user = this.userRepository.getById(isVerified.id);
+            if(!user){
+                throw {error :'No user with corresponding token exists'};
+            }
+            return user.id;
+
+        } catch (error) {
+            console.log("Something went wrong in the auth process");
             throw error;
         }
     }
