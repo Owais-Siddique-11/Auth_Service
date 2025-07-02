@@ -1,4 +1,3 @@
-const { use } = require('react');
 const UserService = require('../services/user-service');
 const userService = new UserService();
 const create= async(req,res)=>{
